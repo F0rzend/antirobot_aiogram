@@ -1,31 +1,20 @@
-BOT_TOKEN = ''
-BASE_URL = 'https://example.com'  # Webhook domain
-WEBHOOK_PATH = f'/webhook/bot/{BOT_TOKEN}'
-WEBHOOK_URL = f'{BASE_URL}{WEBHOOK_PATH}'
+import os
 
-admins = []
+from dotenv import load_dotenv
 
-ip = {
-    'db':    '',
-    'redis': '',
-}
+load_dotenv()
 
-mysql_info = {
-    'host':     ip['db'],
-    'user':     '',
-    'password': '',
-    'db':       '',
-    'maxsize':  5,
-    'port':     3306,
-}
+BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
+admins = [
+]
+
+ip = os.getenv("ip")
 
 aiogram_redis = {
-    'host':     ip['redis'],
-    'password': ''
+    'host': ip,
 }
 
 redis = {
-    'address':  (ip['redis'], 6379),
-    'password': '',
+    'address': (ip, 6379),
     'encoding': 'utf8'
 }

@@ -1,2 +1,4 @@
-from . import errors
-from . import user
+from .errors import dp
+from .users import dp
+
+__all__ = ["dp"]

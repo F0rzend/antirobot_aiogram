@@ -1,13 +1,16 @@
 from aiogram import types
+from aiogram.dispatcher.filters.builtin import CommandStart
 
+from bot import dp
 from utils.misc import rate_limit
 
 
 @rate_limit(5, 'help')
-async def bot_help(msg: types.Message):
+@dp.message_handler(CommandStart())
+async def bot_help(message: types.Message):
     text = [
         'Список команд: ',
         '/start - Начать диалог',
         '/help - Получить справку'
     ]
-    await msg.answer('\n'.join(text))
+    await message.answer('\n'.join(text))
