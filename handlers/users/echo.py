@@ -3,5 +3,5 @@ from loader import dp
 
 
 @dp.message_handler()
-async def bot_start(message: types.Message):
+async def bot_echo(message: types.Message):
     await message.answer(message.text)
