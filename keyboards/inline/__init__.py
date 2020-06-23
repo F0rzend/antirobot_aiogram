@@ -1,3 +1,1 @@
-from aiogram.utils.callback_data import CallbackData
-
-some_callback = CallbackData("new")
+from .guardian_keyboard import generate_confirm_markup, confirming_callback
