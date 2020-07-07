@@ -1,6 +1,10 @@
 import datetime
+import asyncio
 
 from aiogram import types
+from aiogram.dispatcher import FSMContext
+
+from states import ConfirmUserState
 from aiogram.utils.exceptions import CantRestrictSelf
 
 from data.permissions import new_user_added, user_allowed
@@ -8,6 +12,7 @@ from filters import IsGroup
 from keyboards.inline import generate_confirm_markup, confirming_callback
 from loader import bot
 from loader import dp
+from loader import storage
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
@@ -29,8 +34,8 @@ async def new_chat_member(message: types.Message):
     except CantRestrictSelf:
         return
     # Каждому пользователю отсылаем кнопку
-    for i, new_member in enumerate(message.new_chat_members):
-        generated_tuple = generate_confirm_markup(message.new_chat_members[i].id)
+    for new_member in message.new_chat_members:
+        generated_tuple = generate_confirm_markup(new_member.id)
         markup = generated_tuple[0]
         subject = generated_tuple[1]
         await message.reply(
@@ -40,6 +45,18 @@ async def new_chat_member(message: types.Message):
             ),
             reply_markup=markup
         )
+        await storage.set_state(chat=message.chat.id, user=new_member.id, state=ConfirmUserState.IncomerUser)
+        state = dp.current_state(user=new_member.id, chat=message.chat.id)
+        await state.update_data(user_id=new_member.id)
+
+    await asyncio.sleep(10)
+    for new_member in message.new_chat_members:
+        state = dp.current_state(user=new_member.id, chat=message.chat.id)
+        data = await state.get_data()
+        print(data)
+        if data.get('user_id', None):
+            until_date = datetime.datetime.now() + datetime.timedelta(seconds=30)
+            await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
 
 
 @dp.callback_query_handler(confirming_callback.filter())
@@ -69,6 +86,8 @@ async def user_confirm(query: types.CallbackQuery, callback_data: dict):
             user_id=user_id,
             permissions=user_allowed,
         )
+        state = dp.current_state(user=query.from_user.id, chat=query.message.chat.id)
+        await state.finish()
     else:
         until_date = datetime.datetime.now() + datetime.timedelta(seconds=30)
         await bot.kick_chat_member(chat_id=chat_id, user_id=user_id, until_date=until_date)
