@@ -53,7 +53,6 @@ async def new_chat_member(message: types.Message):
     for new_member in message.new_chat_members:
         state = dp.current_state(user=new_member.id, chat=message.chat.id)
         data = await state.get_data()
-        print(data)
         if data.get('user_id', None):
             until_date = datetime.datetime.now() + datetime.timedelta(seconds=30)
             await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
