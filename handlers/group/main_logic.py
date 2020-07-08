@@ -1,18 +1,21 @@
 import datetime
 import asyncio
 
-from aiogram import types
-from aiogram.dispatcher import FSMContext
-
-from states import ConfirmUserState
 from aiogram.utils.exceptions import CantRestrictSelf
 
-from data.permissions import new_user_added, user_allowed
+from aiogram import types
+from data.config import ENTRY_TIME
+from data.config import BAN_TIME
+
+from data.permissions import new_user_added
+from data.permissions import user_allowed
 from filters import IsGroup
-from keyboards.inline import generate_confirm_markup, confirming_callback
+from keyboards.inline import generate_confirm_markup
+from keyboards.inline import confirming_callback
 from loader import bot
 from loader import dp
 from loader import storage
+from states import ConfirmUserState
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
@@ -23,7 +26,7 @@ async def new_chat_member(message: types.Message):
     # Пропускаем старые запросы
     if message.date < datetime.datetime.now() - datetime.timedelta(minutes=1):
         return
-
+    print(message.new_chat_members)
     try:
         # сразу выдаём ему права, неподтверждённого пользователя
         await bot.restrict_chat_member(
@@ -49,12 +52,12 @@ async def new_chat_member(message: types.Message):
         state = dp.current_state(user=new_member.id, chat=message.chat.id)
         await state.update_data(user_id=new_member.id)
 
-    await asyncio.sleep(10)
+    await asyncio.sleep(ENTRY_TIME)
     for new_member in message.new_chat_members:
         state = dp.current_state(user=new_member.id, chat=message.chat.id)
         data = await state.get_data()
         if data.get('user_id', None):
-            until_date = datetime.datetime.now() + datetime.timedelta(seconds=30)
+            until_date = datetime.datetime.now() + datetime.timedelta(seconds=BAN_TIME)
             await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
 
 
@@ -88,7 +91,7 @@ async def user_confirm(query: types.CallbackQuery, callback_data: dict):
         state = dp.current_state(user=query.from_user.id, chat=query.message.chat.id)
         await state.finish()
     else:
-        until_date = datetime.datetime.now() + datetime.timedelta(seconds=30)
+        until_date = datetime.datetime.now() + datetime.timedelta(seconds=BAN_TIME)
         await bot.kick_chat_member(chat_id=chat_id, user_id=user_id, until_date=until_date)
 
     # и убираем часики
