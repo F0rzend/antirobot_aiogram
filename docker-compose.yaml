@@ -6,3 +6,4 @@ services:
     restart: always
     env_file:
       - .env
+    command: python app.py

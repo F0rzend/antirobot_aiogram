@@ -6,5 +6,3 @@ WORKDIR /usr/src/antirobot
 COPY . /usr/src/antirobot
 
 RUN pip install -r requirements.txt
-
-CMD ["python", "app.py"]
