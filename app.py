@@ -10,6 +10,8 @@ async def on_startup(dispatcher):
 
     from utils.notify_admins import on_startup_notify
     await on_startup_notify(dispatcher)
+    from utils.set_bot_commands import set_default_commands
+    await set_default_commands(dispatcher)
     from utils.logger_config import setup_logger
     setup_logger()
     logger.info(f"The bot is running")

@@ -13,7 +13,7 @@ async def start(message: types.Message):
     admin_markup.insert(
         types.InlineKeyboardButton(
             text="Разработчик",
-            url="https://t.me/Kyle167"
+            url="https://t.me/Forzend"
         )
     )
 
