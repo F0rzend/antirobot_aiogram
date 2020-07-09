@@ -29,8 +29,8 @@ async def new_chat_member(message: types.Message):
 
     # Пропускаем старые запросы
     logger.debug(
-        f"New chat member: {message.from_user.username} -> "
-        f"{', '.join([user.username for user in message.new_chat_members])} "
+        f"New chat member: @{message.from_user.username}:{message.from_user.id} -> "
+        f"{', '.join([f'@{user.username}:{user.id}' for user in message.new_chat_members])} "
         f'in chat "{message.chat.title}@{message.chat.username}" chat_id:{message.chat.id}'
     )
     if message.date < datetime.datetime.now() - datetime.timedelta(minutes=1):

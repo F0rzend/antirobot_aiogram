@@ -10,6 +10,8 @@ async def on_startup(dispatcher):
 
     from utils.notify_admins import on_startup_notify
     await on_startup_notify(dispatcher)
+    from utils.logger_config import setup_logger
+    setup_logger()
     logger.info(f"The bot is running")
 
 
@@ -17,7 +19,6 @@ if __name__ == '__main__':
     from aiogram import executor
     from handlers import dp
     if NUM_BUTTONS in range(2, 8):
-        logger.level('INFO')
         executor.start_polling(dp, on_startup=on_startup, skip_updates=SKIP_UPDATES)
     else:
         raise AttributeError('количество кнопок не может быть меньше 2х или больше 7и')
