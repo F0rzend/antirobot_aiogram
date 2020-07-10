@@ -4,7 +4,6 @@ import asyncio
 from aiogram.utils.exceptions import CantRestrictSelf
 
 from aiogram import types
-from aiogram.utils.markdown import hbold
 from loguru import logger
 
 from data.config import ENTRY_TIME
@@ -19,6 +18,7 @@ from loader import bot
 from loader import dp
 from loader import storage
 from states import ConfirmUserState
+from utils.misc import users_entrance_generator
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
@@ -27,12 +27,12 @@ async def new_chat_member(message: types.Message):
     Обрабатываем вход нового пользователя
     """
 
-    # Пропускаем старые запросы
     logger.debug(
         f"New chat member: @{message.from_user.username}:{message.from_user.id} -> "
         f"{', '.join([f'@{user.username}:{user.id}' for user in message.new_chat_members])} "
         f'in chat "{message.chat.title}@{message.chat.username}" chat_id:{message.chat.id}'
     )
+    # Пропускаем старые запросы
     if message.date < datetime.datetime.now() - datetime.timedelta(minutes=1):
         return logger.debug('Old updates was skipped')
 
@@ -53,14 +53,13 @@ async def new_chat_member(message: types.Message):
         generated_tuple = generate_confirm_markup(new_member.id)
         markup = generated_tuple[0]
         subject = generated_tuple[1]
+        answer = users_entrance_generator(mention=new_member.get_mention(as_html=True), subject=subject)
         service_message: types.Message = await message.reply(
-            (
-                f"{new_member.get_mention(as_html=True)}, добро пожаловать в чат!\n"
-                f"Подтверди, что ты не бот и нажми на {hbold(subject)}"
-            ),
+            text=answer,
             reply_markup=markup
         )
-        logger.debug(f'User @{new_member.username}:{new_member.id} got message {service_message.message_id} with keyboard')
+        logger.debug(f'User @{new_member.username}:{new_member.id} '
+                     f'got message {service_message.message_id} with keyboard')
         await storage.set_state(chat=message.chat.id, user=new_member.id, state=ConfirmUserState.IncomerUser)
         logger.debug(f'User @{new_member.username}:{new_member.id} in state "IncomerUser"')
         state = dp.current_state(user=new_member.id, chat=message.chat.id)

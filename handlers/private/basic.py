@@ -1,5 +1,5 @@
 from aiogram import types
-from aiogram.utils.markdown import bold
+from aiogram.utils.markdown import hbold
 from loguru import logger
 
 from filters import IsPrivate
@@ -12,7 +12,7 @@ async def start(message: types.Message):
     admin_markup = types.InlineKeyboardMarkup(row_width=3)
     admin_markup.insert(
         types.InlineKeyboardButton(
-            text="Разработчик",
+            text="Написать разработчику",
             url="https://t.me/Forzend"
         )
     )
@@ -20,13 +20,11 @@ async def start(message: types.Message):
     await message.answer(
         text=''.join(
             (
-                f"Привет, {bold(message.from_user.full_name)}\n\n",
+                f"Привет, {hbold(message.from_user.full_name)}\n\n",
                 "Я простой антибот\n",
-                "Чтобы я мог приступить к работе, добавь меня в чат, ",
-                "сделай админом и дай право менять права пользователей и отправлять сообщения\n\n",
+                "Я могу помочь тебе с установкой бота, для этого отправь мне /quick_guide\n\n",
                 "Об ошибке вы можете сообщить разработчику"
             )
         ),
-        parse_mode='MARKDOWN',
         reply_markup=admin_markup
     )
