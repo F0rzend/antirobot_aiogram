@@ -1,3 +1,4 @@
+from aiogram.utils.exceptions import ChatNotFound
 from loguru import logger
 
 from aiogram import Dispatcher
@@ -7,10 +8,12 @@ from data.config import ADMINS_ID
 
 
 async def on_startup_notify(dp: Dispatcher):
-    for admin in ADMINS_ID:
+    logger.info("Оповещение администрации...")
+    for admin_id in ADMINS_ID:
         try:
-            await dp.bot.send_message(admin, "Бот Запущен", disable_notification=True)
-            await sleep(0.2)
+            await dp.bot.send_message(admin_id, "Бот был успешно запущен", disable_notification=True)
+            logger.debug(f"Сообщение отправлено {admin_id}")
+        except ChatNotFound:
+            logger.debug("Чат с админом не найден")
 
-        except Exception as err:
-            logger.exception(err)
+        await sleep(0.3)

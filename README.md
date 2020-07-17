@@ -1,4 +1,4 @@
-# CapchaBot
+# Antirobot
 
 Телеграм бот для блокировки спама.
 
@@ -27,7 +27,7 @@
 ```shell
 python -m venv venv
 source venv/bin/activate
-# venv/bin/activate.bat - для Windows
+# venv\bin\activate.bat - для Windows
 pip install -r requirements.txt
 ```
 

@@ -7,8 +7,8 @@ from loader import dp
 
 
 @dp.message_handler(IsPrivate())
-async def start(message: types.Message):
-    logger.debug(f"@{message.from_user.username}:{message.from_user.id} in Start handler")
+async def default(message: types.Message):
+    logger.debug(f"@{message.from_user.username}:{message.from_user.id} in default handler")
     admin_markup = types.InlineKeyboardMarkup(row_width=3)
     admin_markup.insert(
         types.InlineKeyboardButton(
