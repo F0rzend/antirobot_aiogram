@@ -1,11 +1,26 @@
 from dataclasses import dataclass
 
+__all__ = [
+    'emojies'
+]
+
 
 @dataclass
 class Emoji:
+    """
+    Датакласс для emoji
+
+    Данные можно брать с unicode.org:
+     https://www.unicode.org/emoji/charts/full-emoji-list.html
+
+    :param unicode: Сам emoji в уникоде, именно эта строка используется для вывода внешнего вида
+     Важно! Вы можете видеть код в формате U+1F48D. В таком случае код в этом месте дополняется нулями до 9 символов:
+     U+1F48D -> U0001F48D и записывается u'\U0001F48D'
+    :param subject: Объект, используется в callback_data для генерации кнопок
+    :param name: Имя в винительном падеже, используется для удобного использования в тексте "нажмите на" + name
+    """
     unicode: str
     subject: str
-    # имя в винительном падеже используется для переводов и удобного использования в тексте "нажмите на" + name
     name: str
 
 
@@ -20,7 +35,7 @@ emojies = (
     Emoji(unicode=u'\U0001F338', subject='blossom', name='цветок'),
     Emoji(unicode=u'\U0001F9C0', subject='cheese', name='сыр'),
     Emoji(unicode=u'\U0001F3A7', subject='headphone', name='наушники'),
-    Emoji(unicode=u'\U000023F0', subject='clock', name='часы'),
+    Emoji(unicode=u'\U000023F0', subject='clock', name='будильник'),
 
     Emoji(unicode=u'\U0001F951', subject='avocado', name='авокадо'),
     Emoji(unicode=u'\U0001F334', subject='palm', name='пальму'),
@@ -40,7 +55,3 @@ emojies = (
     Emoji(unicode=u'\U00002709', subject='envelope', name='конверт'),
     Emoji(unicode=u'\U0001F680', subject='rocket', name='ракету'),
 )
-
-__all__ = [
-    'emojies'
-]
