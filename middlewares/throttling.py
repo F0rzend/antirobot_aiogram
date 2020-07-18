@@ -6,13 +6,15 @@ from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
 
+from utils.misc.phrase_generator import throttled_answers_generator
+
 
 class ThrottlingMiddleware(BaseMiddleware):
     """
     Simple middleware
     """
 
-    def __init__(self, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
+    def __init__(self, limit: int = DEFAULT_RATE_LIMIT, key_prefix: str = 'antiflood_'):
         self.rate_limit = limit
         self.prefix = key_prefix
         super(ThrottlingMiddleware, self).__init__()
@@ -33,11 +35,14 @@ class ThrottlingMiddleware(BaseMiddleware):
             await self.message_throttled(message, t)
             raise CancelHandler()
 
-    @staticmethod
-    async def message_throttled(message: types.Message, throttled: Throttled):
+    async def message_throttled(self, message: types.Message, throttled: Throttled):
+        handler = current_handler.get()
+        if handler:
+            limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
+        else:
+            limit = self.rate_limit
         delta = throttled.rate - throttled.delta
-        if throttled.exceeded_count == 2:
-            await message.reply('Слушай, не так часто, ладно?')
-        if throttled.exceeded_count == 3:
-            await message.reply('Я тебя понял, игнор.')
+        if throttled.exceeded_count <= 2:
+
+            await message.reply(text=throttled_answers_generator(limit=limit))
         await asyncio.sleep(delta)

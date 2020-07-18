@@ -1,10 +1,6 @@
-def rate_limit(limit: int, key=None):
+def rate_limit(limit: int = None, key: str = None):
     """
     Decorator for configuring rate limit and key in different functions.
-
-    :param limit:
-    :param key:
-    :return:
     """
 
     def decorator(func):
