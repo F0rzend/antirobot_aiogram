@@ -33,17 +33,11 @@ class ThrottlingMiddleware(BaseMiddleware):
             await self.message_throttled(message, t)
             raise CancelHandler()
 
-    async def message_throttled(self, message: types.Message, throttled: Throttled):
-        handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
-        if handler:
-            key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
-        else:
-            key = f"{self.prefix}_message"
+    @staticmethod
+    async def message_throttled(message: types.Message, throttled: Throttled):
         delta = throttled.rate - throttled.delta
-        if throttled.exceeded_count <= 2:
-            await message.reply('Too many requests! ')
+        if throttled.exceeded_count == 2:
+            await message.reply('Слушай, не так часто, ладно?')
+        if throttled.exceeded_count == 3:
+            await message.reply('Я тебя понял, игнор.')
         await asyncio.sleep(delta)
-        thr = await dispatcher.check_key(key)
-        if thr.exceeded_count == throttled.exceeded_count:
-            await message.reply('Unlocked.')
