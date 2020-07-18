@@ -5,13 +5,14 @@ from aiogram.dispatcher import DEFAULT_RATE_LIMIT
 from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
+from loguru import logger
 
 from utils.misc.phrase_generator import throttled_answers_generator
 
 
 class ThrottlingMiddleware(BaseMiddleware):
     """
-    Simple middleware
+    Стандартный middleware для предотвращение спама через throttling
     """
 
     def __init__(self, limit: int = DEFAULT_RATE_LIMIT, key_prefix: str = 'antiflood_'):
@@ -37,10 +38,8 @@ class ThrottlingMiddleware(BaseMiddleware):
 
     async def message_throttled(self, message: types.Message, throttled: Throttled):
         handler = current_handler.get()
-        if handler:
-            limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
-        else:
-            limit = self.rate_limit
+        logger.debug(f'@{message.from_user.username}:{message.from_user.id} спамит командой {message.text}')
+        limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
         delta = throttled.rate - throttled.delta
         if throttled.exceeded_count <= 2:
 
