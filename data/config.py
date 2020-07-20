@@ -1,3 +1,5 @@
+import os
+
 from environs import Env
 
 env = Env()
@@ -11,3 +13,5 @@ SKIP_UPDATES = env.bool("SKIP_UPDATES", False)
 NUM_BUTTONS = env.int("NUM_BUTTONS", 5)
 ENTRY_TIME = env.int("ENTRY_TIME", 300)
 BAN_TIME = env.int("BAN_TIME", 30)
+
+WORK_PATH = os.getcwd()
