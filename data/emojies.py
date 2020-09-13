@@ -1,28 +1,11 @@
-from dataclasses import dataclass
+from collections import namedtuple
+
 
 __all__ = [
     'emojies'
 ]
 
-
-@dataclass
-class Emoji:
-    """
-    Датакласс для emoji
-
-    Данные можно брать с unicode.org: https://www.unicode.org/emoji/charts/full-emoji-list.html
-
-    :param unicode: Сам emoji в уникоде, именно эта строка используется для вывода внешнего вида
-    Важно! Вы можете видеть код в формате U+1F48D. В таком случае код в этом месте дополняется нулями до 9 символов:
-    U+1F48D -> U0001F48D и записывается u'\U0001F48D'
-
-    :param subject: Объект, используется в callback_data для генерации кнопок
-
-    :param name: Имя в винительном падеже, используется для удобного использования в тексте "нажмите на" + name
-    """
-    unicode: str
-    subject: str
-    name: str
+Emoji = namedtuple('Emoji', ['unicode', 'subject', 'name'])
 
 
 emojies = (
