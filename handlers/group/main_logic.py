@@ -67,7 +67,7 @@ async def new_chat_member(message: types.Message):
         logger.debug(f'@{new_member.username}:{new_member.id} user data has been updated')
 
     logger.debug(f'The bot waits {ENTRY_TIME} seconds '
-                 f'for {", ".join([user.username for user in message.new_chat_members])}')
+                 f'for {", ".join([str(user.username) for user in message.new_chat_members])}')
     await asyncio.sleep(ENTRY_TIME)
     for new_member in message.new_chat_members:
         state = dp.current_state(user=new_member.id, chat=message.chat.id)
