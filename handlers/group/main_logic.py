@@ -48,6 +48,8 @@ async def new_chat_member(message: types.Message):
         except CantRestrictSelf:
             return logger.debug('Can\'t restrict self')
 
+    service_messages = list()
+
     # Каждому пользователю отсылаем кнопку
     for new_member in message.new_chat_members:
         generated_tuple = generate_confirm_markup(new_member.id)
@@ -65,6 +67,7 @@ async def new_chat_member(message: types.Message):
         state = dp.current_state(user=new_member.id, chat=message.chat.id)
         await state.update_data(user_id=new_member.id)
         logger.debug(f'@{new_member.username}:{new_member.id} user data has been updated')
+        service_messages.append(service_message)
 
     logger.debug(f'The bot waits {ENTRY_TIME} seconds '
                  f'for {", ".join([str(user.username) for user in message.new_chat_members])}')
@@ -77,6 +80,10 @@ async def new_chat_member(message: types.Message):
             until_date = datetime.datetime.now() + datetime.timedelta(seconds=BAN_TIME)
             await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
             logger.debug(f'User was kicked from chat @{new_member.username}:{new_member.id} on {BAN_TIME} seconds')
+
+    for service_message in service_messages:
+        logger.debug(f'Message {service_message.message_id} was deleted')
+        await service_message.delete()
 
 
 @dp.callback_query_handler(confirming_callback.filter())
