@@ -84,6 +84,7 @@ async def new_chat_member(message: types.Message):
     for service_message in service_messages:
         logger.debug(f'Message {service_message.message_id} was deleted')
         await service_message.delete()
+        await message.delete()
 
 
 @dp.callback_query_handler(confirming_callback.filter())
