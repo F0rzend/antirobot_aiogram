@@ -78,8 +78,15 @@ async def new_chat_member(message: types.Message):
         if data.get('user_id', None):
             logger.debug(f'User @{new_member.username}:{new_member.id} data: {data}')
             until_date = datetime.datetime.now() + datetime.timedelta(seconds=BAN_TIME)
-            await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
-            logger.debug(f'User was kicked from chat @{new_member.username}:{new_member.id} on {BAN_TIME} seconds')
+            asyncio.user = await bot.get_chat_member(chat_id=message.chat.id, user_id=new_member.id)
+            if asyncio.user['status'] == 'kicked':
+                logger.debug(f'User @{new_member.username}:{new_member.id} already kicked from the chat ("{message.chat.title}@{message.chat.username}" chat_id:{message.chat.id}) by other bot or admin')
+            else:
+                await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
+                logger.debug(f'User was kicked from chat @{new_member.username}:{new_member.id} on {BAN_TIME} seconds')
+            state = dp.current_state(user=new_member.id, chat=message.chat.id)
+            await state.finish()
+            logger.debug(f'User @{new_member.username}:{new_member.id} is out of the state')
 
     for service_message in service_messages:
         logger.debug(f'Message {service_message.message_id} was deleted')
