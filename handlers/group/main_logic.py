@@ -83,11 +83,11 @@ async def new_chat_member(message: types.Message):
             # asyncio так как требуются свежие данные, а не на время входа в цикл.
             asyncio.user = await bot.get_chat_member(chat_id=message.chat.id, user_id=new_member.id)
             if asyncio.user['status'] == 'kicked':
-            # Если пользователь заблокирован в чате то ничего не делаем и просто выдаём сообщение в консоль
+                # Если пользователь заблокирован в чате то ничего не делаем и просто выдаём сообщение в консоль
                 logger.debug(f'User @{new_member.username}:{new_member.id} already kicked from the chat \
                 ("{message.chat.title}@{message.chat.username}" chat_id:{message.chat.id}) by other bot or admin')
             else:
-            # Если пользователь не был заблокирован то назначается его блокировка на указанное в конфигурации время
+                # Если пользователь не был заблокирован то назначается его блокировка на указанное в конфигурации время
                 await bot.kick_chat_member(chat_id=message.chat.id, user_id=new_member.id, until_date=until_date)
                 logger.debug(f'User was kicked from chat @{new_member.username}:{new_member.id} on {BAN_TIME} seconds')
             # Завершаем состояние "новый пользователь", если пользователь просто проигнорировал капчу
