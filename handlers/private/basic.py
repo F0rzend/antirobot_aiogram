@@ -2,11 +2,10 @@ from aiogram import types
 from aiogram.utils.markdown import hbold
 from loguru import logger
 
-from filters import IsPrivate
 from loader import dp
 
 
-@dp.message_handler(IsPrivate())
+@dp.message_handler(chat_type='private')
 async def default(message: types.Message):
     logger.debug(f"@{message.from_user.username}:{message.from_user.id} in default handler")
     admin_markup = types.InlineKeyboardMarkup(row_width=3)

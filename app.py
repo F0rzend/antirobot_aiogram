@@ -8,13 +8,11 @@ from loader import dp
 from utils.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 from utils.logger_config import setup_logger
-from filters import setup_filters
 from middlewares import setup_middlewares
 
 
 async def on_startup(dispatcher: Dispatcher):
     setup_logger()
-    setup_filters(dispatcher)
     logger.info("Установка обработчиков...")
     # Установка обработчиков производится посредством декораторов. Для этого достаточно просто импортировать модуль
     import handlers

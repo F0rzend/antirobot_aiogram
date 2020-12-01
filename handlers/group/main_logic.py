@@ -11,7 +11,6 @@ from data.config import BAN_TIME
 
 from data.permissions import new_user_added
 from data.permissions import user_allowed
-from filters import IsGroup
 from keyboards.inline import generate_confirm_markup
 from keyboards.inline import confirming_callback
 from loader import bot
@@ -21,7 +20,7 @@ from states import ConfirmUserState
 from utils.misc import users_entrance_generator
 
 
-@dp.message_handler(IsGroup(), content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
+@dp.message_handler(chat_type=['group', 'supergroup'], content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
 async def new_chat_member(message: types.Message):
     """
     Обрабатываем вход нового пользователя

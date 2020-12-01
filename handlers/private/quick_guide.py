@@ -1,12 +1,13 @@
 from aiogram import types
 from aiogram.dispatcher.filters import Command
+from aiogram.types import ChatType
+
 from loguru import logger
 
-from filters import IsPrivate
 from loader import dp
 
 
-@dp.message_handler(IsPrivate(), Command('quick_guide'))
+@dp.message_handler(Command('quick_guide'), chat_type='private')
 async def quick_guide(message: types.Message):
     logger.debug(f'User @{message.from_user.username}:{message.from_user.id} needs help')
     answer = '\n'.join([
