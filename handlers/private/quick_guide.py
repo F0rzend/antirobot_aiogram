@@ -1,6 +1,5 @@
 from aiogram import types
 from aiogram.dispatcher.filters import Command
-from aiogram.types import ChatType
 
 from loguru import logger
 
