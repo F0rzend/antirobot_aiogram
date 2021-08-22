@@ -1,9 +1,0 @@
-version: "3.8"
-
-services:
-  antirobot_aiogram:
-    build: .
-    restart: always
-    env_file:
-      - .env
-    command: python app.py
